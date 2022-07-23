@@ -1,4 +1,4 @@
-const INTERVAL = 10;
+const INTERVAL = 1500;
 let counterInterval, currentTime, paused;
 
 function drawLabels() {
