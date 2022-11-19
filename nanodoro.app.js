@@ -1,4 +1,4 @@
-const INTERVAL = 1500;
+const INTERVAL = 10;
 let counterInterval, currentTime, paused;
 
 function drawLabels() {
@@ -40,6 +40,11 @@ function init() {
   }, BTN1);
 }
 
+function alarm() {
+  Bangle.buzz(1000, 1).then(() => Bangle.beep(200, 220.0 * 8));
+  return Promise.resolve(true);
+}
+
 function mainLoop() {
   init();
   counterInterval = setInterval(() => {
@@ -49,7 +54,8 @@ function mainLoop() {
 
     if (currentTime === 0) {
       clearInterval(counterInterval);
-      Bangle.buzz(1000, 1);
+      alarm().then(alarm).then(alarm);
+
       E.showMessage("Congratulations! You've finished your tomato.", {
         img: atob(
           "FBQBAfgAf+Af/4P//D+fx/n+f5/v+f//n//5//+f//n////3//5/n+P//D//wf/4B/4AH4A="
