@@ -1,4 +1,4 @@
-const INTERVAL = 10;
+const INTERVAL = 1500;
 let counterInterval, currentTime, paused;
 
 function drawLabels() {
@@ -21,7 +21,6 @@ function draw() {
 function pauseHandler() {
   setWatch(() => {
     paused = !paused;
-    console.log(paused);
     pauseHandler();
   }, BTN2);
 }
@@ -32,7 +31,6 @@ function init() {
   drawLabels();
   paused = false;
   setWatch(() => {
-    console.log("BTN1");
     if (counterInterval) {
       clearInterval(counterInterval);
     }
@@ -40,9 +38,21 @@ function init() {
   }, BTN1);
 }
 
+const wait = () => new Promise(resolve => {
+  setTimeout(() => {
+    resolve(true);
+  }, 500);
+});
+
 function alarm() {
-  Bangle.buzz(1000, 1).then(() => Bangle.beep(200, 220.0 * 8));
-  return Promise.resolve(true);
+  return new Promise(resolve => {
+    Bangle.buzz(1000, 1)
+      .then(wait)
+      .then(() => Bangle.buzz(1000, 0.5))
+      .then(wait)
+      .then(resolve);
+  });
+
 }
 
 function mainLoop() {
@@ -54,7 +64,7 @@ function mainLoop() {
 
     if (currentTime === 0) {
       clearInterval(counterInterval);
-      alarm().then(alarm).then(alarm);
+      alarm().then(alarm).then(alarm).then(alarm);
 
       E.showMessage("Congratulations! You've finished your tomato.", {
         img: atob(
